@@ -1,0 +1,126 @@
+---
+title: 实验四：关联规则及其应用
+---
+
+# 实验四：关联规则及其应用
+
+```{r}
+
+#install and load package arules
+# install.packages("arules")
+library(arules)
+#install and load arulesViz
+# install.packages("arulesViz")
+library(arulesViz)
+#install and load tidyverse
+# install.packages("tidyverse")
+library(tidyverse)
+#install and load readxml
+# install.packages("readxml")
+library(readxl)
+#install and load knitr
+# install.packages("knitr")
+library(knitr)
+#load ggplot2 as it comes in tidyverse
+library(ggplot2)
+#install and load lubridate
+# install.packages("lubridate")
+library(lubridate)
+#install and load plyr
+# install.packages("plyr")
+library(plyr)
+library(dplyr)
+
+#install.packages("MASS", repos = "https://mirrors.ustc.edu.cn/CRAN/") 
+#install.packages("reshape2", repos = "https://mirrors.ustc.edu.cn/CRAN/") 
+#install.packages("reshape", repos = "https://mirrors.ustc.edu.cn/CRAN/") 
+
+library(MASS)
+library(reshape2)
+library(reshape)
+#install.packages('e1071')
+#install.packages('purrr')
+#install.packages('dplyr')
+#library(e1071)
+#library(purrr)        # Functional programming
+#ibrary(dplyr)        # Functional programming
+"done"
+```
+
+## 1、购物篮分析的数据表示。购物篮的数据表示方法有两种：使用事物数据格式或者表数据格式。其中，采用表数据格式时，每条记录表示不同的事务，每个项采用0/1 标志表示。请将表1表示成表数据格式表2。
+
+
+表2：路边蔬菜摊的表数据格式
+事务	芦笋	豆类	花椰菜	玉米	青辣椒	南瓜	西红柿
+1							
+2							
+3							
+4							
+5							
+6							
+7							
+8							
+9							
+10							
+11							
+12							
+13							
+14							
+```{r}
+df <- read.csv(file = '../data/exp4.csv')
+df = df %>% mutate(Business = as.factor(Business))
+df
+df2 = cast( melt(df, id=c("Business")), Business~value)[-1:-2]
+df2
+```
+
+## 2、建立频繁项集。考虑表2的事务集合D. 这里设在D中出现次数超过4次的项是频繁项集，请给出频繁1-项集 ，频繁2-项集 ，频繁3-项集 （要求列表表示所有频率计算过程和结果）.
+
+```{r}
+write.csv(df[2:5], '../data/exp4-tr.csv', quote = FALSE, row.names = FALSE, col.names = FALSE, sep=",")
+tr <- read.transactions('../data/exp4-tr.csv', format = 'basket', sep=',', header = TRUE)
+summary(tr)
+```
+
+```{r}
+minsupport = 4
+items = names(df2)
+
+c1c =data.frame(combn(items, 1))
+c2c =data.frame(combn(items, 2))
+c3c =data.frame(combn(items, 3))
+
+# c3 = combn(items, 3)
+dfx1 = sapply(c1, function(x) pmap(df2[x],function(...)sum(...)==1))
+dfx2 = sapply(c2, function(x) pmap(df2[x],function(...)sum(...)==2))
+dfx3 = sapply(c2, function(x) pmap(df2[x],function(...)sum(...)==3))
+
+items = unique(c(df2[2:-1]))
+data.frame(tr)
+itemLabels(tr)
+
+inspect(tr)
+
+# Create an item frequency plot for the top 20 items
+if (!require("RColorBrewer")) {
+  # install color package of R
+  # install.packages("RColorBrewer")
+  #include library RColorBrewer
+  library(RColorBrewer)
+}
+```
+```{r}
+itemFrequencyPlot(tr,topN=20,type="absolute",col=brewer.pal(8,'Pastel2'), main="Absolute Item Frequency Plot")
+```
+```{r}
+itemFrequencyPlot(tr,topN=20,type="relative",col=brewer.pal(8,'Pastel2'), main="Relative Item Frequency Plot")
+```
+
+## 3、 建立关联规则。利用频繁项集建立路边蔬菜摊中隐含的关联规则（支持度>50%，可信度>80%），并列表表示所有候选关联规则支持度和可信度的值。给出该案例挖掘的最终关联规则结果。
+
+```{r}
+association.rules <- apriori(tr, parameter = list(supp=0.001, conf=0.8,maxlen=10))
+summary(association.rules)
+inspect(association.rules[1:10])
+
+```

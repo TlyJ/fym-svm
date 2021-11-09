@@ -1,0 +1,102 @@
+# 实验三：关联规则及其应用
+
+```{r}
+#install.packages('e1071')
+library(e1071)
+"done"
+```
+
+## 1. 实验一
+
+使用支持向量机，根据收入及年龄分类，判断用户是否具有购买欲望
+
+### a) 将 Social_Network_Ads 数据导入编程语言
+
+```{r}
+ads <- read.csv(file = '../data/Social_Network_Ads.csv')
+ads = ads %>% mutate(Gender = as.factor(Gender ))
+ads
+```
+
+### b) 根据性别和收入变量，对有购买欲的和无购买欲的用户使用不同的颜色画出对应的散点图，观察分类情况。
+
+```{r}
+dat = data.frame(ads$gender,ads$sala)
+y = pur
+svmfit = svm(y ~ ., data = dat, kernel = "linear", cost = 10, scale = FALSE)
+
+plot(data.frame(gender, sala, pur))
+```
+
+```{r}
+plot(data.frame(sala, pur), type="p")
+```
+
+### c) 使用线性支持向量机进行分类并尝试评价模型准确率
+
+```{r}
+dat = ads[3:4]
+y   = ads[5]
+fit = svm(factor(y) ~ ., data = dat, scale = FALSE, kernel = "radial", cost = 5)
+```
+
+### d) 尝试使用非线性支持向量机完成上述实验
+
+```{r}
+
+```
+
+## 2. 实验二
+
+### a) 将 Position_Salaries 数据导入编程语言
+
+```{r}
+ps <- read.csv(file = '../data/Position_Salaries.csv')
+ps
+```
+
+
+
+### b) 根据线性回归与职业等级作线性回归，并求得线性回归的 R-Squared
+
+```{r}
+
+```
+
+### c) 预测 level 为 4.5 和 8.5 的员工薪水
+
+```{r}
+
+```
+
+## 3. 实验三
+
+### a) 将实验二的线性回归方程利用在 Social_Network_Ads 数据数据中，得到每个用户的职业等级
+
+```{r}
+
+```
+
+### b) 尝试使用支持向量机对三维的数据进行分类。
+
+```{r}
+
+```
+
+#.libPaths('C:/Users/snomi/rlang-lib/')
+
+# https://rdocumentation.org/packages/e1071/versions/1.7-9
+
+#install.packages('https://rdocumentation.org/packages/e1071/versions/1.7-9')
+
+#
+
+head(ads)
+X=ads[2:4]
+Y=ads[5]
+
+plot(ads[4], ads[5])
+
+# plot(ads, y, ...)
+
+
