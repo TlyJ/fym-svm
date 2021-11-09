@@ -1,5 +1,10 @@
 # SVM practice
 
+for vscode:
+add env var to user env:
+R_LIBS_USER=%userprofile%\rlang-lib
+
+
 ## reference
 
 - [Apriori算法介绍（Python实现） - llhthinker - 博客园]( https://www.cnblogs.com/llhthinker/p/6719779.html )
